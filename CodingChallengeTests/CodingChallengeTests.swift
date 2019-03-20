@@ -31,26 +31,35 @@ class CodingChallengeTests: XCTestCase {
         
         //1. Arrange
         viewModel.artistLimit = 0
+        viewModel.albumLimit = 0
         
         //2. Activate
         viewModel.resetLimits()
+        viewModel.updateLimits()
         
         //3. Asserts
-        XCTAssertEqual(viewModel.artistLimit, 5)
+        XCTAssertEqual(viewModel.artistLimit, 10)
+        XCTAssertEqual(viewModel.albumLimit, 10)
     }
 
     func testServiceCall() {
         
         //1. Arrange
         var myAlbums = [Album]()
+        var artist = [Artist]()
         
         //expectations - to wait for async call
         let promise = expectation(description: "receiving content..")
         
         //2. Activate
-        ContentService.shared.getAlbums(search: "Snoop", limit: 10) { albums in
-            
-            myAlbums = albums
+//        ContentService.shared.getAlbums(search: "Snoop", limit: 10) { albums in
+//
+//            myAlbums = albums
+//            promise.fulfill()
+//        }
+        
+        ContentService.shared.getArtists(search: "Asha", limit: 10) { (artists) in
+            artist = artists
             promise.fulfill()
         }
         
@@ -58,12 +67,15 @@ class CodingChallengeTests: XCTestCase {
         waitForExpectations(timeout: 3, handler: nil)
         
         //3. Assert
-        XCTAssertTrue(myAlbums.count > 0)
-        XCTAssertEqual(myAlbums.count, 10)
+        //XCTAssertTrue(myAlbums.count > 0)
+        //XCTAssertEqual(myAlbums.count, 10)
+        
+        XCTAssertEqual(artist.count, 10)
         
         
         self.measure {
-            viewModel.getContent(with: "Kanye")
+            //viewModel.getContent(with: "Kanye")
+            viewModel.updateLimits()
         }
     }
 
