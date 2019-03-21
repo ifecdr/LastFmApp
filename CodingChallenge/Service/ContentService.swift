@@ -13,6 +13,7 @@ typealias AlbumHandler = (Albums) -> Void
 typealias TrackHandler = (Tracks) -> Void
 
 typealias ContentHandler = ([Content]) -> Void
+typealias TopAlbumHandler = ([TopAlbums]) -> Void
 
 final class ContentService {
     
@@ -254,6 +255,61 @@ final class ContentService {
                 }.resume()
         }
     }
+    
+    
+    //MARK: TOP ALBUMS
+    
+    func getTopAlbums(for artist: String, completion: @escaping TopAlbumHandler) {
+        
+        if let url = URL(string: LastAPI.getTopAlbums(search: artist) ) {
+            
+            var topAlbumArray = [TopAlbums]()
+            
+            URLSession.shared.dataTask(with: url) { (d, response, e) in
+                
+                if let error = e {
+                    print(error)
+                    completion([])
+                }
+                
+                if let data = d {
+                    
+                    do {
+                        
+                        let responseData = try JSONDecoder().decode(TopAlbumsResult.self, from: data)
+                        
+                        
+                        for top in responseData.topalbums.album {
+                            
+                            var name: String!
+                            var imageDict: [[String:String]]!
+                            
+                            for dictionary in top.image {
+                                for value in dictionary.values {
+                                    if value == "large" {
+                                        //set values for object
+                                        imageDict = [dictionary]
+                                        name = top.name
+                                    }
+                                }
+                            }
+                            //init object and appending to array
+                            topAlbumArray.append(TopAlbums(name: name, image: imageDict))
+                        }
+                        
+                        completion(topAlbumArray)
+                        
+                    } catch {
+                        
+                        print("Error: \(error)")
+                        
+                    }
+                }
+            }.resume()
+        
+        }
+        
+    } // end func
     
     
     

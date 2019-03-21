@@ -18,7 +18,7 @@ struct LastAPI {
     static let artist = "?method=artist.search&artist="
     static let album = "?method=album.search&album="
     static let track = "?method=track.search&track="
-    
+    static let topAlbum = "?method=artist.gettopalbums&artist="
     
     //app key
     static let key = "&api_key=43070dda2f585e51b62ead8380678e67&format=json&limit="
@@ -35,6 +35,10 @@ struct LastAPI {
     
     static func getTrackURL(search: String, get amount: Int) -> String {
         return base + track + search + key + "\(amount)"
+    }
+    
+    static func getTopAlbums(search: String) -> String {
+        return base + topAlbum + search + key + "\(5)"
     }
     
 }

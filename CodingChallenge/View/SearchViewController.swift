@@ -56,11 +56,13 @@ extension SearchViewController: UISearchResultsUpdating {
         
         if searchBarIsEmpty() {
             self.viewModel.resetLimits()
+        } else {
+            
+            let searchText = searchController.searchBar.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            viewModel.getContent(with: searchText)
+            
         }
-        
-        let searchText = searchController.searchBar.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        viewModel.getContent(with: searchText)
     }
     
 }
